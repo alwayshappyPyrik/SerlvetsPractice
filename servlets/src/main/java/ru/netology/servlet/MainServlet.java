@@ -9,10 +9,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class MainServlet extends HttpServlet {
-    private final String GET = "GET";
-    private final String POST = "POST";
-    private final String DELETE = "DELETE";
-    private final String pathByResource = "/api/posts";
+    private static final String GET = "GET";
+    private static final String POST = "POST";
+    private static final String DELETE = "DELETE";
+    private static final String PATH_BY_RESOURCE = "/api/posts";
     private PostController controller;
 
     @Override
@@ -28,20 +28,20 @@ public class MainServlet extends HttpServlet {
         try {
             final var path = req.getRequestURI();
             final var method = req.getMethod();
-            if (method.equals(GET) && path.equals(pathByResource)) {
+            if (method.equals(GET) && path.equals(PATH_BY_RESOURCE)) {
                 controller.all(resp);
                 return;
             }
-            if (method.equals(GET) && path.matches(pathByResource + "/\\d+")) {
+            if (method.equals(GET) && path.matches(PATH_BY_RESOURCE + "/\\d+")) {
                 final var id = Long.parseLong(path.substring(path.lastIndexOf("/") + 1));
                 controller.getById(id, resp);
                 return;
             }
-            if (method.equals(POST) && path.equals(pathByResource)) {
+            if (method.equals(POST) && path.equals(PATH_BY_RESOURCE)) {
                 controller.save(req.getReader(), resp);
                 return;
             }
-            if (method.equals(DELETE) && path.matches(pathByResource + "/\\d+")) {
+            if (method.equals(DELETE) && path.matches(PATH_BY_RESOURCE + "/\\d+")) {
                 final var id = Long.parseLong(path.substring(path.lastIndexOf("/") + 1));
                 controller.removeById(id, resp);
                 return;
