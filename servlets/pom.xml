@@ -16,6 +16,9 @@
     </properties>
 
 
+<!--    Запускать webapp-runner командой java -jar target/dependency/webapp-runner-9.0.86.0.jar target/servlets.war-->
+<!--    или java -jar target/dependency/webapp-runner-7.0.22.jar target/servlets-->
+
     <build>
         <plugins>
             <plugin>
