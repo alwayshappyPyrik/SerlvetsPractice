@@ -2,7 +2,7 @@ package ru.netology.model;
 
 import java.util.Objects;
 
-public class Post {
+public class Post implements Comparable<Post> {
     private long id;
     private String content;
 
@@ -41,5 +41,10 @@ public class Post {
     @Override
     public int hashCode() {
         return Objects.hash(id, content);
+    }
+
+    @Override
+    public int compareTo(Post o) {
+        return (int)(this.id - o.getId());
     }
 }
