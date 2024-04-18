@@ -3,10 +3,7 @@ package ru.netology.repository;
 import ru.netology.exception.NotFoundException;
 import ru.netology.model.Post;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -21,7 +18,12 @@ public class PostRepository {
     }
 
     public Optional<Post> getById(long id) {
-        return Optional.ofNullable(listPosts.get(id));
+        Post postByShow = listPosts.get(id);
+        if (postByShow != null) {
+            return Optional.of(postByShow);
+        } else {
+            throw new NotFoundException("Поста с таким id нету в репозитории");
+        }
     }
 
     //    Если от клиента приходит пост с id=0, значит, это создание нового поста. Вы сохраняете его в списке и присваиваете ему новый id.
@@ -29,7 +31,9 @@ public class PostRepository {
 
     public Post save(Post post) {
         if (post.getId() == 0) {
-            listPosts.put(postID.getAndIncrement(), new Post(post.getId(), post.getContent()));
+            long id = post.getId();
+            long newId = findFreeId(id);
+            listPosts.put(postID.incrementAndGet(), new Post(newId, post.getContent()));
             return post;
         } else {
             Post postId = listPosts.get(post.getId());
@@ -38,13 +42,28 @@ public class PostRepository {
                 listPosts.put(id, new Post(post.getId(), post.getContent()));
                 return post;
             } else if (postId == null) {
-                throw new NotFoundException("Поста с таким id нету");
+                throw new NotFoundException("Поста с таким id нету в репозитории");
             }
         }
         return post;
     }
 
+    public long findFreeId(long id) {
+        if (listPosts.isEmpty()) {
+            return ++id;
+        } else {
+            Post maxValueInMap = Collections.max(listPosts.values());
+            id = maxValueInMap.getId();
+            return ++id;
+        }
+    }
+
     public void removeById(long id) {
-        listPosts.remove(id);
+        Post postByDelete = listPosts.get(id);
+        if (postByDelete != null) {
+            listPosts.remove(id);
+        } else {
+            throw new NotFoundException("Поста с таким id нету в репозитории");
+        }
     }
 }
